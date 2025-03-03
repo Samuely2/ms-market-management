@@ -7,7 +7,7 @@ main_routes = Blueprint('main', __name__)
 def index():
     return "Olá, mundo!"
 
-@main_routes.route('/users', methods=['POST'])
+@main_routes.route('/api/sellers', methods=['POST'])
 def create_usersmarket():
     data = request.json
     try:
