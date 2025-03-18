@@ -11,13 +11,19 @@ def index():
 def create_usersmarket():
     data = request.json
     try:
-        new_user = UsersMarketController.create_usermarket(data)
-        return jsonify({
-            'id': new_user.id,
-            'name': new_user.name,
-            'cnpj': new_user.cnpj,
-            'phone': new_user.phone,
-            'email': new_user.email
-        }), 201
+        new_user = UsersMarketController.create_usermarket(data)        
+        return jsonify(new_user), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+@main_routes.route('/api/activate', methods=['POST'])
+def activate_usersmarket():
+    data = request.json
+    try:
+        response = UsersMarketController.activate_usermarket(data)
+        
+        if 'error' in response:
+            return jsonify(response), 400  # Caso tenha erro
+        return jsonify(response), 200  # Caso seja bem-sucedido
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  # Erro interno do servidor
