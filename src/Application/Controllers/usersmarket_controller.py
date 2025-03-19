@@ -48,3 +48,17 @@ class UsersMarketController:
                 return {'error': 'Código de ativação inválido.'}
         except Exception as e:
             return {'error': str(e)}
+
+    @staticmethod
+    def login(data):
+        try:
+            token = usersmarket_services.login(
+                session=db.session,
+                email=data["email"],
+                password=data["password"]
+            )
+
+            return token 
+        except Exception as e:
+            return {"error": str(e)}
+
