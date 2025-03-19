@@ -32,9 +32,9 @@ def activate_usersmarket():
 def login():
     data = request.json
     try:
-        result = LoginController.login(data)
+        result = UsersMarketController.login(data)
         if 'error' in result:
-            return jsonify(result), 400  # Caso ocorra erro no login
-        return jsonify(result), 200  # Caso o login seja bem-sucedido
+            return jsonify(result), 400
+        return jsonify(result), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500  # Erro interno do servidor
+        return jsonify({'error': str(e)}), 500  

@@ -1,4 +1,5 @@
 from src.Application.Services import usersmarket_services
+from src.Application.Services.usersmarket_services import UsersMarketService
 from src.database import db
 
 class UsersMarketController:
@@ -52,7 +53,7 @@ class UsersMarketController:
     @staticmethod
     def login(data):
         try:
-            token = usersmarket_services.login(
+            token = usersmarket_services.UsersMarketService.login( 
                 session=db.session,
                 email=data["email"],
                 password=data["password"]

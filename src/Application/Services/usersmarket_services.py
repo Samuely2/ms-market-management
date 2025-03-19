@@ -1,7 +1,9 @@
-from requests import Session
-from dotenv import load_dotenv
+import jwt
+import datetime
 import os
-
+from src.Application.Services.auth_services import AuthService
+from dotenv import load_dotenv
+from sqlalchemy.orm import Session
 from src.Infrastructure.http.whats_app import generateNumber, sendMessage
 from src.Infrastructure.Models.user import UsersMarketModel
 
@@ -33,13 +35,11 @@ class UsersMarketService:
 
     @staticmethod
     def activate_usermarket(session, activation_code):
-        # Tenta encontrar o usuário com o código de ativação
         user = session.query(UsersMarketModel).filter_by(code=activation_code).first()
         
         if user is None:
             raise ValueError("Código de ativação inválido.")
         
-        # Ativar o usuário
         user.is_active = 1
         session.commit()
         
@@ -52,16 +52,7 @@ class UsersMarketService:
         if not user:
             raise ValueError("Email ou senha incorretos")
 
-        return {"token": AuthService.generate_token(user.id, user.email)}
-
-    @staticmethod
-    def generate_token(user_id: int, email: str) -> str:
-        payload = {
-            "user_id": user_id,
-            "email": email,
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)
-        }
-        return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        return {"token": AuthService.generate_token(user.id, user.email)}  # Chamando corretamente
 
     @staticmethod
     def verify_token(token: str):
