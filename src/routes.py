@@ -23,12 +23,12 @@ def activate_usersmarket():
         response = UsersMarketController.activate_usermarket(data)
         
         if 'error' in response:
-            return jsonify(response), 400  # Caso tenha erro
-        return jsonify(response), 200  # Caso seja bem-sucedido
+            return jsonify(response), 400
+        return jsonify(response), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500  # Erro interno do servidor
+        return jsonify({'error': str(e)}), 500
 
-@main_routes.route('/api/login', methods=['POST'])  # Alterei para POST
+@main_routes.route('/api/login', methods=['POST'])
 def login():
     data = request.json
     try:
