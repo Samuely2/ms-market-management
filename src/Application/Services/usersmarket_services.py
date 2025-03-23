@@ -1,14 +1,9 @@
-import jwt
 import datetime
 import os
 from src.Application.Services.auth_services import AuthService
-from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from src.Infrastructure.http.whats_app import generateNumber, sendMessage
 from src.Infrastructure.Models.user import UsersMarketModel
-
-load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY")
 
 class UsersMarketService:
     @staticmethod
@@ -57,11 +52,3 @@ class UsersMarketService:
 
         return {"token": AuthService.generate_token(user.id, user.email)}
 
-    @staticmethod
-    def verify_token(token: str):
-        try:
-            return jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise ValueError("Token expirado")
-        except jwt.InvalidTokenError:
-            raise ValueError("Token inválido")

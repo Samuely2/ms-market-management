@@ -1,14 +1,16 @@
 import jwt
 import datetime
-import os
-
-from dotenv import load_dotenv
-load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY")
+import secrets
 
 class AuthService:
     @staticmethod
+    def get_secret_key() -> str:
+        secret = secrets.token_hex(24)
+        return secret
+
+    @staticmethod
     def generate_token(user_id: int, email: str) -> str:
+        SECRET_KEY = AuthService.get_secret_key() 
         payload = {
             "user_id": user_id,
             "email": email,
