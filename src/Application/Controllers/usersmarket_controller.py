@@ -30,7 +30,6 @@ class UsersMarketController:
     @staticmethod  
     def activate_usermarket(data):
         try:
-            # Chama o serviço para ativar o usuário
             user = usersmarket_services.UsersMarketService.activate_usermarket(
                 session=db.session,
                 activation_code=data['activation_code']

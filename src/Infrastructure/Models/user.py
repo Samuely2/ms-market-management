@@ -17,6 +17,6 @@ class UsersMarketModel(db.Model):
         self.phone = phone
         self.email = email
         self.password = password
-        self.code = code
         self.is_active = is_active
+        self.code = code
        

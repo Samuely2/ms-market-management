@@ -46,13 +46,16 @@ class UsersMarketService:
         return user
 
     @staticmethod
-    def login(session: Session, email: str, password: str):
+    def login(session, email, password):
         user = session.query(UsersMarketModel).filter_by(email=email, password=password).first()
 
         if not user:
             raise ValueError("Email ou senha incorretos")
 
-        return {"token": AuthService.generate_token(user.id, user.email)}  # Chamando corretamente
+        if user.is_active == 0:
+            raise ValueError("O usuário não está ativo")
+
+        return {"token": AuthService.generate_token(user.id, user.email)}
 
     @staticmethod
     def verify_token(token: str):
