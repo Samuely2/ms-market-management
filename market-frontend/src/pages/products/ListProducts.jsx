@@ -16,7 +16,7 @@ export default function ListProducts() {
     const loadProducts = async () => {
       try {
         const data = await productService.list();
-        setProducts(data);
+        setProducts(data.filter(p => p.seller_id === user.id));
       } catch (err) {
         setError('Erro ao carregar produtos');
         console.error(err);
@@ -25,7 +25,7 @@ export default function ListProducts() {
       }
     };
     loadProducts();
-  }, []);
+  }, [user.id]);
 
   const handleToggleStatus = async (id) => {
     try {
@@ -53,7 +53,7 @@ export default function ListProducts() {
       </Button>
 
       <Grid container spacing={3}>
-        {products.filter(p => p.seller_id === user.id).map(product => (
+        {products.map(product => (
           <Grid item xs={12} sm={6} md={4} key={product.id}>
             <ProductCard 
               product={product}
