@@ -1,22 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../services/api';
 import Header from '../components/Header';
 import '../styles/auth.css';
 
 const ActivateAccount = () => {
-  const [activationCode, setActivationCode] = useState('');
+  const [code, setCode] = useState(['', '', '', '']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [countdown, setCountdown] = useState(30);
   const location = useLocation();
   const navigate = useNavigate();
 
   const { email } = location.state || {};
 
+  // Contador para reenvio
+  useEffect(() => {
+    if (countdown > 0 && !success) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown, success]);
+
+  const handleCodeChange = (e, index) => {
+    const newCode = [...code];
+    newCode[index] = e.target.value.replace(/\D/g, '');
+    setCode(newCode);
+    
+    // Avança para o próximo campo
+    if (e.target.value && index < 3) {
+      document.getElementById(`code-${index + 1}`).focus();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const activationCode = code.join('');
+    
+    if (activationCode.length !== 4) {
+      setError('Por favor, insira um código de 4 dígitos');
+      return;
+    }
+
     setLoading(true);
+    setError('');
+    
     try {
       const response = await axios.post('/activate', {
         activation_code: activationCode
@@ -26,12 +55,24 @@ const ActivateAccount = () => {
         setError(response.data.error);
       } else {
         setSuccess(true);
-        setTimeout(() => navigate('/'), 2000); // Redireciona após 2 segundos
+        setTimeout(() => navigate('/'), 2000);
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Erro ao ativar conta. Tente novamente.');
+      setError(err.response?.data?.error || 'Código inválido. Tente novamente.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    if (countdown > 0) return;
+    
+    try {
+      await axios.post('/resend-code', { email });
+      setCountdown(30);
+      setError('');
+    } catch (err) {
+      setError('Erro ao reenviar código. Tente novamente.');
     }
   };
 
@@ -42,8 +83,8 @@ const ActivateAccount = () => {
         <div className="auth-card">
           <div className="auth-header">
             <h1>Ativar Conta</h1>
-            <p>Insira o código recebido por WhatsApp</p>
-            {email && <p className="activation-email">Para: {email}</p>}
+            <p>Insira o código de 4 dígitos enviado para seu WhatsApp</p>
+            {email && <p className="activation-email">{email}</p>}
           </div>
           
           {success ? (
@@ -58,28 +99,39 @@ const ActivateAccount = () => {
             <form onSubmit={handleSubmit} className="auth-form">
               {error && <div className="error-message">{error}</div>}
               
-              <div className="form-group">
-                <label htmlFor="activationCode">Código de 6 dígitos</label>
-                <input
-                  type="text"
-                  id="activationCode"
-                  value={activationCode}
-                  onChange={(e) => setActivationCode(e.target.value)}
-                  placeholder="Ex: 123456"
-                  maxLength="6"
-                  pattern="\d{6}"
-                  required
-                />
+              <div className="code-input-container">
+                {code.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`code-${index}`}
+                    type="text"
+                    maxLength="1"
+                    value={digit}
+                    onChange={(e) => handleCodeChange(e, index)}
+                    className="code-input"
+                    autoFocus={index === 0}
+                    disabled={loading}
+                  />
+                ))}
               </div>
               
               <button type="submit" disabled={loading} className="auth-button">
-                {loading ? 'Ativando...' : 'Ativar Conta'}
+                {loading ? 'Verificando...' : 'Ativar Conta'}
               </button>
             </form>
           )}
           
           <div className="auth-footer">
-            <p>Não recebeu o código? <button className="resend-link">Reenviar código</button></p>
+            <p>
+              Não recebeu o código? 
+              <button 
+                onClick={handleResendCode}
+                disabled={countdown > 0}
+                className="resend-link"
+              >
+                {countdown > 0 ? `Reenviar (${countdown}s)` : 'Reenviar código'}
+              </button>
+            </p>
           </div>
         </div>
       </div>
