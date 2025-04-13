@@ -1,68 +1,54 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { register } from '../services/authService'
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { register } from '../services/authService';
+import AuthForm from '../components/AuthForm';
+import Header from '../components/Header';
+import '../styles/auth.css';
 
-export default function Register() {
-  const [formData, setFormData] = useState({
-    name: '',
-    cnpj: '',
-    phone: '',
-    email: '',
-    password: ''
-  })
-  const [error, setError] = useState('')
-  const navigate = useNavigate()
+const Register = () => {
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (formData) => {
+    setLoading(true);
     try {
-      await register(formData)
-      navigate('/')
+      await register(formData);
+      navigate('/activate', { state: { email: formData.email } });
     } catch (err) {
-      setError(err.error || 'Erro no cadastro')
+      setError(err.error || 'Erro no cadastro. Por favor, tente novamente.');
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Cadastro</h1>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <form onSubmit={handleSubmit}>
-          {['name', 'cnpj', 'phone', 'email', 'password'].map((field) => (
-            <div key={field} className="mb-4">
-              <label className="block text-gray-700 mb-2 capitalize">
-                {field === 'phone' ? 'Telefone' : field}
-              </label>
-              <input
-                type={field === 'password' ? 'password' : field === 'email' ? 'email' : 'text'}
-                name={field}
-                value={formData[field]}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-                required
-              />
-            </div>
-          ))}
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white p-3 rounded hover:bg-green-700 mt-4"
-          >
-            Cadastrar
-          </button>
-        </form>
-        <p className="mt-4 text-center">
-          Já tem conta?{' '}
-          <a href="/" className="text-blue-600 hover:underline">
-            Faça login
-          </a>
-        </p>
+    <>
+      <Header />
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-header">
+            <h1>Market Dashboard</h1>
+            <p>Crie sua conta de vendedor</p>
+          </div>
+          
+          <AuthForm 
+            onSubmit={handleSubmit}
+            error={error}
+            loading={loading}
+            buttonText="Cadastrar"
+            showNameField={true}
+            showCnpjField={true}
+            showPhoneField={true}
+          />
+          
+          <div className="auth-footer">
+            <p>Já tem uma conta? <Link to="/" className="auth-link">Faça login</Link></p>
+          </div>
+        </div>
       </div>
-    </div>
-  )
-}
+    </>
+  );
+};
+
+export default Register;

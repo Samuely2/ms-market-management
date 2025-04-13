@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from './pages/Login.jsx';
+import Login from './pages/Login';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import NewProduct from './pages/NewProduct';
 import EditProduct from './pages/EditProduct';
+import ActivateAccount from './pages/ActivateAccount'; // Importe o componente
 import './styles/layout.css';
 import './styles/auth.css';
 import './styles/products.css';
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/activate" element={<ActivateAccount />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/new" element={<NewProduct />} />
         <Route path="/products/:id" element={<ProductDetail />} />
