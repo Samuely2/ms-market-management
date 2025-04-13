@@ -209,3 +209,44 @@
     font-size: 1.2rem;
     text-align: center;
   }
+  /* Estilos para mensagem de cadastro */
+.auth-message {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .registered-email {
+    font-weight: bold;
+    margin: 10px 0;
+    color: #4f46e5;
+  }
+  
+  /* Estilos para ativação */
+  .activation-email {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-top: 5px;
+  }
+  
+  /* Estilo para campo de código */
+  input[type="text"][maxlength="6"] {
+    letter-spacing: 0.5em;
+    font-family: monospace;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  /* Estilo para botão de reenvio */
+  .resend-link {
+    background: none;
+    border: none;
+    color: #4f46e5;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .resend-link:hover {
+    text-decoration: underline;
+  }
