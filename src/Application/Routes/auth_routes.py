@@ -1,13 +1,13 @@
 from flask import Blueprint, jsonify, request
 from src.Application.Controllers.usersmarket_controller import UsersMarketController
 
-main_routes = Blueprint('main', __name__)
+auth_routes = Blueprint('auth', __name__)
 
-@main_routes.route('/')
+@auth_routes.route('/')
 def index():
     return "Olá, mundo!"
 
-@main_routes.route('/api/sellers', methods=['POST'])
+@auth_routes.route('/api/sellers', methods=['POST'])
 def create_usersmarket():
     data = request.json
     try:
@@ -16,7 +16,7 @@ def create_usersmarket():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@main_routes.route('/api/activate', methods=['POST'])
+@auth_routes.route('/api/activate', methods=['POST'])
 def activate_usersmarket():
     data = request.json
     try:
@@ -28,7 +28,7 @@ def activate_usersmarket():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@main_routes.route('/api/login', methods=['POST'])
+@auth_routes.route('/api/login', methods=['POST'])
 def login():
     data = request.json
     try:
@@ -37,4 +37,4 @@ def login():
             return jsonify(result), 400
         return jsonify(result), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500  
+        return jsonify({'error': str(e)}), 500
