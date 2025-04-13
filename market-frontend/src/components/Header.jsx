@@ -1,14 +1,13 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
-export default function Header() {
+const Header = () => {
   const navigate = useNavigate();
-  
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
+  const { user, logout } = useAuth();
+
+  if (!user) return null;
 
   return (
     <AppBar position="static">
@@ -16,8 +15,15 @@ export default function Header() {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           Market Management
         </Typography>
-        <Button color="inherit" onClick={handleLogout}>Sair</Button>
+        <Button color="inherit" onClick={() => {
+          logout();
+          navigate('/login');
+        }}>
+          Sair
+        </Button>
       </Toolbar>
     </AppBar>
   );
-}
+};
+
+export default Header;

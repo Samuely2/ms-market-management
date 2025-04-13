@@ -4,24 +4,6 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setUser({
-          id: payload.user_id,
-          email: payload.email
-        });
-      } catch (error) {
-        console.error('Error decoding token:', error);
-        localStorage.removeItem('token');
-      }
-    }
-    setLoading(false);
-  }, []);
 
   const login = (token) => {
     localStorage.setItem('token', token);
@@ -37,13 +19,32 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUser({
+          id: payload.user_id,
+          email: payload.email
+        });
+      } catch (error) {
+        localStorage.removeItem('token');
+      }
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }
