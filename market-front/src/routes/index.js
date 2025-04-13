@@ -4,7 +4,7 @@ import Register from '../pages/Register'
 import Products from '../pages/Products'
 import ProductDetail from '../pages/ProductDetail'
 import NewProduct from '../pages/NewProduct'
-import { AuthProvider } from '../contexts/AuthContext'
+import { AuthProvider } from '../context/AuthContext'
 
 export default function AppRoutes() {
   return (

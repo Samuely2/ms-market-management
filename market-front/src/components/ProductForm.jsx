@@ -1,44 +1,43 @@
-import { useState } from 'react'
+import '../styles/products.css';
 
-export default function ProductForm({ initialData = {}, onSubmit }) {
+const ProductForm = ({ product, onSubmit, loading }) => {
   const [formData, setFormData] = useState({
-    name: initialData.name || '',
-    price: initialData.price || '',
-    quantity: initialData.quantity || '',
-    image: initialData.image || '',
-    status: initialData.status !== undefined ? initialData.status : true,
-  })
+    name: product?.name || '',
+    price: product?.price || '',
+    quantity: product?.quantity || '',
+    image: product?.image || '',
+    status: product?.status ?? true
+  });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setFormData(prev => ({
-      ...prev,
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
       [name]: type === 'checkbox' ? checked : value
-    }))
-  }
+    });
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    onSubmit(formData)
-  }
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-2">Nome</label>
+    <form onSubmit={handleSubmit} className="product-form">
+      <div className="form-group">
+        <label>Nome do Produto</label>
         <input
           type="text"
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
           required
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <label className="block text-gray-700 mb-2">Preço (R$)</label>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Preço (R$)</label>
           <input
             type="number"
             step="0.01"
@@ -46,54 +45,58 @@ export default function ProductForm({ initialData = {}, onSubmit }) {
             name="price"
             value={formData.price}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
             required
           />
         </div>
-        <div>
-          <label className="block text-gray-700 mb-2">Quantidade</label>
+
+        <div className="form-group">
+          <label>Quantidade</label>
           <input
             type="number"
             min="0"
             name="quantity"
             value={formData.quantity}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
             required
           />
         </div>
       </div>
 
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-2">Imagem (URL)</label>
+      <div className="form-group">
+        <label>Imagem (URL)</label>
         <input
           type="url"
           name="image"
           value={formData.image}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
         />
+        {formData.image && (
+          <div className="image-preview">
+            <img 
+              src={formData.image} 
+              alt="Preview" 
+              onError={(e) => e.target.style.display = 'none'}
+            />
+          </div>
+        )}
       </div>
 
-      <div className="mb-6">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            name="status"
-            checked={formData.status}
-            onChange={handleChange}
-            className="mr-2"
-          />
-          <span>Produto ativo</span>
-        </label>
+      <div className="form-group checkbox-group">
+        <input
+          type="checkbox"
+          id="status"
+          name="status"
+          checked={formData.status}
+          onChange={handleChange}
+        />
+        <label htmlFor="status">Produto ativo</label>
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700"
-      >
-        Salvar Produto
+      <button type="submit" disabled={loading} className="submit-btn">
+        {loading ? 'Salvando...' : product?.id ? 'Atualizar' : 'Cadastrar'}
       </button>
     </form>
-  )
-}
+  );
+};
+
+export default ProductForm;

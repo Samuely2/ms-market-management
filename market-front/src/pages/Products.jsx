@@ -1,90 +1,87 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { getProducts, toggleStatus } from '../services/productService'
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { getProducts, toggleStatus } from '../services/productService';
+import ProductCard from '../components/ProductCard';
+import Header from '../components/Header';
+import Spinner from '../components/Spinner';
+import '../styles/products.css';
 
-export default function Products() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
+const Products = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const data = await getProducts()
-        setProducts(data)
+        const data = await getProducts();
+        setProducts(data);
       } catch (error) {
-        console.error('Erro ao carregar produtos:', error)
+        console.error('Erro ao carregar produtos:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    loadProducts()
-  }, [])
+    };
+    loadProducts();
+  }, []);
 
   const handleToggleStatus = async (id) => {
     try {
-      await toggleStatus(id)
+      await toggleStatus(id);
       setProducts(products.map(p => 
         p.id === id ? { ...p, status: !p.status } : p
-      ))
+      ));
     } catch (error) {
-      console.error('Erro ao alterar status:', error)
+      console.error('Erro ao alterar status:', error);
     }
-  }
+  };
 
-  if (loading) return <div className="text-center py-8">Carregando...</div>
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return <Spinner />;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Meus Produtos</h1>
-        <Link
-          to="/products/new"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          Novo Produto
-        </Link>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map(product => (
-          <div key={product.id} className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-            {product.image && (
-              <img 
-                src={product.image} 
-                alt={product.name}
-                className="w-full h-40 object-cover mb-3 rounded"
+    <>
+      <Header />
+      <main className="products-page">
+        <div className="container">
+          <div className="products-header">
+            <h1>Meus Produtos</h1>
+            <div className="products-actions">
+              <input
+                type="text"
+                placeholder="Buscar produtos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
-            )}
-            <div className="flex justify-between items-start">
-              <h3 className="font-bold text-lg">{product.name}</h3>
-              <span className={`px-2 py-1 text-xs rounded-full ${
-                product.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}>
-                {product.status ? 'Ativo' : 'Inativo'}
-              </span>
-            </div>
-            <p className="text-gray-600 mt-1">R$ {product.price.toFixed(2)}</p>
-            <p className="text-gray-500 text-sm">Estoque: {product.quantity}</p>
-            
-            <div className="flex justify-end space-x-2 mt-4">
-              <Link
-                to={`/products/${product.id}`}
-                className="text-blue-600 hover:underline text-sm"
-              >
-                Detalhes
+              <Link to="/products/new" className="new-product-btn">
+                Novo Produto
               </Link>
-              <button
-                onClick={() => handleToggleStatus(product.id)}
-                className={`text-sm ${
-                  product.status ? 'text-yellow-600' : 'text-green-600'
-                } hover:underline`}
-              >
-                {product.status ? 'Inativar' : 'Ativar'}
-              </button>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+
+          {filteredProducts.length === 0 ? (
+            <div className="empty-state">
+              <p>Nenhum produto encontrado</p>
+              <Link to="/products/new">Cadastre seu primeiro produto</Link>
+            </div>
+          ) : (
+            <div className="products-grid">
+              {filteredProducts.map(product => (
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  onToggleStatus={handleToggleStatus}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+    </>
+  );
+};
+
+export default Products;    
