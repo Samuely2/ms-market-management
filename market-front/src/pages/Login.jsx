@@ -13,9 +13,12 @@ const Login = () => {
   const handleSubmit = async (formData) => {
     setLoading(true);
     try {
-      const { token, user } = await login(formData.email, formData.password);
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      const response = await login(formData.email, formData.password);
+      localStorage.setItem('token', response.token.token); // Armazena o token
+      if (response.user) {
+        localStorage.setItem('user', JSON.stringify(response.user));
+      }
+      // Redireciona para products ou ativação conforme sua lógica
       navigate('/products');
     } catch (err) {
       setError(err.error || 'Credenciais inválidas');

@@ -5,7 +5,8 @@ import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import NewProduct from './pages/NewProduct';
 import EditProduct from './pages/EditProduct';
-import ActivateAccount from './pages/ActivateAccount'; // Importe o componente
+import ActivateAccount from './pages/ActivateAccount';
+import ProtectedRoute from './components/ProtectedRoute';
 import './styles/layout.css';
 import './styles/auth.css';
 import './styles/products.css';
@@ -17,10 +18,31 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/activate" element={<ActivateAccount />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/new" element={<NewProduct />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
-        <Route path="/products/:id/edit" element={<EditProduct />} />
+        
+        {/* Rotas protegidas */}
+        <Route path="/products" element={
+          <ProtectedRoute>
+            <Products />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/products/new" element={
+          <ProtectedRoute>
+            <NewProduct />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/products/:id" element={
+          <ProtectedRoute>
+            <ProductDetail />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/products/:id/edit" element={
+          <ProtectedRoute>
+            <EditProduct />
+          </ProtectedRoute>
+        } />
       </Routes>
     </BrowserRouter>
   );

@@ -1,8 +1,8 @@
 """Recriação do banco de dados
 
-Revision ID: d5d0f2be9ca5
+Revision ID: 056b9e2caba2
 Revises: 
-Create Date: 2025-04-13 17:09:39.437946
+Create Date: 2025-04-13 22:00:45.536256
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd5d0f2be9ca5'
+revision = '056b9e2caba2'
 down_revision = None
 branch_labels = None
 depends_on = None

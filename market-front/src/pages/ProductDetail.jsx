@@ -1,81 +1,95 @@
-import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { getProduct } from '../services/productService'
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { getProduct } from '../services/productService';
+import Header from '../components/Header';
+import Spinner from '../components/Spinner';
+import '../styles/products.css'; // Reutilizando o mesmo CSS
 
 export default function ProductDetail() {
-  const { id } = useParams()
-  const [product, setProduct] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const data = await getProduct(id)
-        setProduct(data)
+        const data = await getProduct(id);
+        setProduct(data);
       } catch (error) {
-        console.error('Erro ao carregar produto:', error)
+        console.error('Erro ao carregar produto:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    loadProduct()
-  }, [id])
+    };
+    loadProduct();
+  }, [id]);
 
-  if (loading) return <div className="text-center py-8">Carregando...</div>
-  if (!product) return <div className="text-center py-8">Produto não encontrado</div>
+  if (loading) return <Spinner />;
+  if (!product) return (
+    <div className="empty-state">
+      <p>Produto não encontrado</p>
+      <Link to="/products">Voltar para lista de produtos</Link>
+    </div>
+  );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        {product.image && (
-          <img 
-            src={product.image} 
-            alt={product.name}
-            className="w-full h-64 object-cover"
-          />
-        )}
-        <div className="p-6">
-          <div className="flex justify-between items-start">
-            <h1 className="text-2xl font-bold">{product.name}</h1>
-            <span className={`px-3 py-1 rounded-full text-sm ${
-              product.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-            }`}>
-              {product.status ? 'Ativo' : 'Inativo'}
-            </span>
-          </div>
-          
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-gray-500">Preço</h3>
-              <p className="text-xl font-semibold">R$ {product.price.toFixed(2)}</p>
-            </div>
-            <div>
-              <h3 className="text-gray-500">Estoque</h3>
-              <p className="text-xl font-semibold">{product.quantity}</p>
+    <>
+      <Header />
+      <main className="products-page">
+        <div className="container">
+          <div className="products-header">
+            <h1>Detalhes do Produto</h1>
+            <div className="products-actions">
+              <Link to={`/products/${product.id}/edit`} className="new-product-btn">
+                Editar Produto
+              </Link>
+              <Link to="/products" className="detail-btn">
+                Voltar
+              </Link>
             </div>
           </div>
 
-          <div className="mt-6">
-            <h3 className="text-gray-500">Cadastrado em</h3>
-            <p>{new Date(product.created_at).toLocaleDateString()}</p>
-          </div>
+          <div className="product-card">
+            {product.image && (
+              <img 
+                src={product.image} 
+                alt={product.name}
+                className="product-image"
+              />
+            )}
+            <div className="product-info">
+              <div className="product-header">
+                <h3>{product.name}</h3>
+                <span className={`stock-badge ${!product.status ? 'inactive' : ''}`}>
+                  {product.status ? 'Ativo' : 'Inativo'}
+                </span>
+              </div>
+              
+              <div className="product-price">
+                R$ {product.price.toFixed(2)}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <h4 className="text-gray-500">Estoque</h4>
+                  <p>{product.quantity} unidades</p>
+                </div>
+                <div>
+                  <h4 className="text-gray-500">Cadastrado em</h4>
+                  <p>{new Date(product.created_at).toLocaleDateString()}</p>
+                </div>
+              </div>
 
-          <div className="mt-6 flex space-x-4">
-            <Link
-              to={`/products/${product.id}/edit`}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Editar
-            </Link>
-            <Link
-              to="/products"
-              className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-            >
-              Voltar
-            </Link>
+              {product.description && (
+                <div className="mt-4">
+                  <h4 className="text-gray-500">Descrição</h4>
+                  <p>{product.description}</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  )
+      </main>
+    </>
+  );
 }

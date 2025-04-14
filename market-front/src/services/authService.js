@@ -40,3 +40,4 @@ export const activateAccount = async (code) => {
       throw error.response?.data || { error: 'Erro ao reenviar código' };
     }
   };
+  

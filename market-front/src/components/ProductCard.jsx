@@ -1,14 +1,52 @@
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/products.css';
 
 const ProductCard = ({ product, onToggleStatus }) => {
+  const imgRef = useRef(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!product.image) return;
+
+    const img = new Image();
+    img.src = product.image;
+
+    img.onload = () => {
+      if (imgRef.current) {
+        imgRef.current.src = product.image;
+        setImageLoaded(true);
+      }
+    };
+
+    img.onerror = () => {
+      if (imgRef.current) {
+        imgRef.current.style.display = 'none';
+      }
+    };
+
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [product.image]);
+
   return (
     <div className="product-card">
-      <img 
-        src={product.image || 'https://via.placeholder.com/300'} 
-        alt={product.name}
-        className="product-image"
-      />
+      <div className="image-container">
+        {product.image && (
+          <img
+            ref={imgRef}
+            src={product.image}
+            alt={product.name}
+            className="product-image"
+            style={{ display: imageLoaded ? 'block' : 'none' }}
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        )}
+      </div>
       <div className="product-info">
         <div className="product-header">
           <h3>{product.name}</h3>
@@ -22,15 +60,10 @@ const ProductCard = ({ product, onToggleStatus }) => {
           <button
             onClick={() => onToggleStatus(product.id)}
             className={`status-btn ${product.status ? 'active' : 'inactive'}`}
-            title={product.status ? 'Inativar' : 'Ativar'}
           >
             {product.status ? 'Ativo' : 'Inativo'}
           </button>
-          <Link
-            to={`/products/${product.id}`}
-            className="detail-btn"
-            title="Detalhes"
-          >
+          <Link to={`/products/${product.id}`} className="detail-btn">
             Ver detalhes
           </Link>
         </div>
