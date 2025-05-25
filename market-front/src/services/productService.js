@@ -25,7 +25,18 @@ export const toggleStatus = async (id) => {
   return response.data;
 };
 
-export const deleteProduct = async (id) => {
-  const response = await api.delete(`/products/${id}`);
-  return response.data;
+export const sellProduct = async (productId, quantity) => {
+  try {
+    const response = await api.post(`/products/${productId}/sell/${quantity}`);
+    return {
+      success: true,
+      data: response.data,
+      remainingStock: response.data.remaining_stock || response.data.new_quantity
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data?.error || 'Erro ao processar venda'
+    };
+  }
 };

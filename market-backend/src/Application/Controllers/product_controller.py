@@ -106,21 +106,26 @@ class ProductController:
             return {'error': str(e)}, 400
 
     @staticmethod
-    def sell_product(product_id, seller_id, data):
+    def sell_product(product_id, seller_id, quantity):
         try:
-            sale = product_services.ProductService.sell_product(
+            # Chama o service para processar a venda
+            result = product_services.ProductService.sell_product(
                 session=db.session,
                 product_id=product_id,
                 seller_id=seller_id,
-                quantity=data['quantity']
+                quantity=quantity
             )
             
             return {
-                'sale_id': sale.id,
-                'product_id': sale.product_id,
-                'quantity_sold': sale.quantity_sold,
-                'sale_price': sale.sale_price,
-                'sale_date': sale.sale_date.isoformat()
+                'sale_id': result['sale'].id,
+                'product_id': result['sale'].product_id,
+                'quantity_sold': result['sale'].quantity_sold,
+                'sale_price': float(result['sale'].sale_price),
+                'sale_date': result['sale'].sale_date.isoformat(),
+                'remaining_stock': result['product'].quantity
             }
-        except Exception as e:
+        except ValueError as e:
             return {'error': str(e)}, 400
+        except Exception as e:
+            db.session.rollback()
+            return {'error': 'Erro interno no servidor'}, 500

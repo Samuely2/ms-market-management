@@ -453,3 +453,158 @@
     margin-bottom: 8px;
   }
   
+.sell-btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #10b981;
+  color: white;
+  border: none;
+  transition: background 0.2s;
+}
+
+.sell-btn:hover {
+  background: #059669;
+}
+
+.sell-btn:disabled {
+  background: #d1fae5;
+  color: #065f46;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ===== ESTILOS DO MODAL DE VENDA ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal h3 {
+  margin-top: 0;
+  color: var(--primary);
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.modal-actions button:last-child {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.modal-actions button:last-child:hover {
+  background: var(--primary-dark);
+}
+
+.modal-actions button:first-child {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+}
+
+.error-message {
+  color: #dc2626;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  padding: 8px;
+  background: #fee2e2;
+  border-radius: 4px;
+}
+
+.form-group {
+  margin: 15px 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+/* Estilos para o botão de venda */
+.sell-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sell-btn:hover {
+  background: #059669;
+}
+
+.sell-btn:disabled {
+  background: #d1fae5;
+  cursor: not-allowed;
+}
+
+/* Estilos para o modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.error-message {
+  color: #ef4444;
+  margin: 10px 0;
+  font-size: 0.9rem;
+}

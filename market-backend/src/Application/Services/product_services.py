@@ -74,7 +74,7 @@ class ProductService:
                 raise ValueError("Produto inativo não pode ser vendido")
                 
             if product.quantity < quantity:
-                raise ValueError("Quantidade insuficiente em estoque")
+                raise ValueError(f"Quantidade insuficiente. Disponível: {product.quantity}")
                 
             sale = SaleModel(
                 product_id=product_id,
@@ -88,7 +88,11 @@ class ProductService:
             session.add(sale)
             session.commit()
             
-            return sale
+            return {
+                'sale': sale,
+                'product': product
+            }
+            
         except Exception as e:
             session.rollback()
             raise e

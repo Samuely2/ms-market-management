@@ -46,11 +46,10 @@ def toggle_product_status(current_user, product_id):
         return jsonify(response), 400
     return jsonify(response), 200
 
-@product_routes.route('/api/products/<int:product_id>/sell', methods=['POST'])
+@product_routes.route('/api/products/<int:product_id>/sell/<int:quantity>', methods=['POST'])
 @AuthService.token_required
-def sell_product(current_user, product_id):
-    data = request.json
-    response = ProductController.sell_product(product_id, current_user['id'], data)
+def sell_product(current_user, product_id, quantity):
+    response = ProductController.sell_product(product_id, current_user['id'], quantity)
     if 'error' in response:
         return jsonify(response), 400
     return jsonify(response), 201

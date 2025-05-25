@@ -36,6 +36,12 @@ const Products = () => {
     }
   };
 
+  const handleUpdateStock = (productId, newQuantity) => {
+    setProducts(products.map(p => 
+      p.id === productId ? { ...p, quantity: newQuantity } : p
+    ));
+  };
+
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -74,6 +80,7 @@ const Products = () => {
                   key={product.id} 
                   product={product} 
                   onToggleStatus={handleToggleStatus}
+                  onUpdateStock={handleUpdateStock}
                 />
               ))}
             </div>
@@ -84,4 +91,4 @@ const Products = () => {
   );
 };
 
-export default Products;    
+export default Products;

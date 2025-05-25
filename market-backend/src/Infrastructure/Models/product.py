@@ -9,7 +9,7 @@ class ProductModel(db.Model):
     price = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Boolean, default=True)  
-    image = db.Column(db.String(255)) 
+    image = db.Column(db.String(5000)) 
     seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
