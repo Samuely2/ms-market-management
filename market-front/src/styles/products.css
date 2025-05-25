@@ -277,7 +277,6 @@
     font-size: 0.875rem;
     margin-top: 0.5rem;
   }
-  /* Adicione estas regras */
 .image-container {
     height: 200px;
     overflow: hidden;
@@ -415,6 +414,7 @@
   
   .product-card {
     background: white;
+    width: max-content;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -435,6 +435,15 @@
     background-color: #f8f9fa;
     overflow: hidden;
   }
+    .image-container-details {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    overflow: hidden;
+  }
+
   
   .product-image {
     max-width: 100%;

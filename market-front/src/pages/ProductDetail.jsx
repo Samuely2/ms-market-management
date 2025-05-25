@@ -47,8 +47,8 @@ export default function ProductDetail() {
                 Voltar
               </Link>
             </div>
-          </div>
-
+          </div>          
+          <div className="image-container-details">
           <div className="product-card">
             {product.image && (
               <img 
@@ -87,6 +87,7 @@ export default function ProductDetail() {
                 </div>
               )}
             </div>
+          </div>
           </div>
         </div>
       </main>
