@@ -1,13 +1,20 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../styles/layout.css';
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate('/')
+  };
+
   return (
     <header className="header">
       <div className="container">
-        <Link to="/products" className="logo">Market Dashboard</Link>
+        <div className="logo">Market Dashboard</div>
         <nav>
-          <button className="logout-btn">Sair</button>
+          <button className="logout-btn" onClick={handleLogout}>Sair</button>
         </nav>
       </div>
     </header>
