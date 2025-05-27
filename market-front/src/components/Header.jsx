@@ -16,7 +16,7 @@ const Header = () => {
       <div className="container">
         <div className="logo">Market Dashboard</div>
         <nav>
-        <button onClick={handleLogout}>Sair</button>
+        <button className="logout-button" onClick={handleLogout}>Sair</button>
         </nav>
       </div>
     </header>
