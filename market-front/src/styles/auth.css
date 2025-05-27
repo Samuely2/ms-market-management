@@ -311,3 +311,21 @@
     color: #4f46e5;
     margin-top: 5px;
   }
+
+  .input-error {
+    border: 1px solid red;
+    background-color: #ffecec;
+  }
+  
+  .field-error {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #333;
+  }
