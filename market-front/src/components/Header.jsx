@@ -1,12 +1,14 @@
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../styles/layout.css';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    navigate('/')
+    logout();
+    navigate('/', { replace: true });
+    window.location.reload();
   };
 
   return (
@@ -14,11 +16,13 @@ const Header = () => {
       <div className="container">
         <div className="logo">Market Dashboard</div>
         <nav>
-          <button className="logout-btn" onClick={handleLogout}>Sair</button>
+        <button onClick={handleLogout}>Sair</button>
         </nav>
       </div>
     </header>
+
   );
 };
 
-export default Header;
+export default Header; 
+
