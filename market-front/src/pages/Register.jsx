@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../services/authService';
 import Header from '../components/Header';
-import AuthForm from '../components/AuthForm'; // importa o formulário reutilizável
+import AuthForm from '../components/AuthForm'; 
 import '../styles/auth.css';
 
 const Register = () => {
