@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProducts, toggleStatus } from '../services/productService';
+import { getProducts, toggleStatus, copyProduct } from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import Header from '../components/Header';
 import Spinner from '../components/Spinner';
@@ -26,12 +26,15 @@ const Products = () => {
   }, []);
 
   const handleToggleStatus = async (id) => {
+    const originalProducts = [...products];
+    // Otimista
+    setProducts(products.map(p => 
+      p.id === id ? { ...p, status: !p.status } : p
+    ));
     try {
       await toggleStatus(id);
-      setProducts(products.map(p => 
-        p.id === id ? { ...p, status: !p.status } : p
-      ));
     } catch (error) {
+      setProducts(originalProducts); // Reverte em caso de erro
       console.error('Erro ao alterar status:', error);
     }
   };
@@ -40,6 +43,19 @@ const Products = () => {
     setProducts(products.map(p => 
       p.id === productId ? { ...p, quantity: newQuantity } : p
     ));
+  };
+  
+  const handleCopyProduct = async (id) => {
+    try {
+      // Chama a API, que retorna o produto recém-criado
+      const newProduct = await copyProduct(id);
+      
+      // Adiciona o novo produto à lista existente, fazendo a UI atualizar imediatamente
+      setProducts(currentProducts => [...currentProducts, newProduct]);
+    } catch (error) {
+      console.error('Erro ao copiar o produto:', error);
+      // Aqui você pode adicionar um alerta ou notificação para o usuário
+    }
   };
 
   const filteredProducts = products.filter(product =>
@@ -81,6 +97,7 @@ const Products = () => {
                   product={product} 
                   onToggleStatus={handleToggleStatus}
                   onUpdateStock={handleUpdateStock}
+                  onCopyProduct={handleCopyProduct}
                 />
               ))}
             </div>

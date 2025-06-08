@@ -40,3 +40,8 @@ export const sellProduct = async (productId, quantity) => {
     };
   }
 };
+
+export const copyProduct = async (id) => {
+  const response = await api.post(`/products/${id}/copy`);
+  return response.data;
+};

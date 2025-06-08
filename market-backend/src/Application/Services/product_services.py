@@ -96,3 +96,27 @@ class ProductService:
         except Exception as e:
             session.rollback()
             raise e
+        
+    @staticmethod
+    def duplicate_product(session, product_id, seller_id):
+        try:
+            original_product = session.query(ProductModel).filter_by(id=product_id, seller_id=seller_id).first()
+            if not original_product:
+                raise ValueError("Produto original não encontrado")
+
+            new_product = ProductModel(
+                name=original_product.name,
+                price=original_product.price,
+                quantity=original_product.quantity,
+                image=original_product.image,
+                seller_id=original_product.seller_id,
+                status=original_product.status 
+            )
+
+            session.add(new_product)
+            session.commit()
+            
+            return new_product
+        except Exception as e:
+            session.rollback()
+            raise e

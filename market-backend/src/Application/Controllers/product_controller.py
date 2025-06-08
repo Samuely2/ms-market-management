@@ -129,3 +129,28 @@ class ProductController:
         except Exception as e:
             db.session.rollback()
             return {'error': 'Erro interno no servidor'}, 500
+        
+    @staticmethod
+    def duplicate_product(product_id, seller_id):
+        try:
+            new_product = product_services.ProductService.duplicate_product(
+                session=db.session,
+                product_id=product_id,
+                seller_id=seller_id
+            )
+            
+            return {
+                'id': new_product.id,
+                'name': new_product.name,
+                'price': new_product.price,
+                'quantity': new_product.quantity,
+                'status': new_product.status,
+                'image': new_product.image,
+                'created_at': new_product.created_at.isoformat(),
+                'updated_at': new_product.updated_at.isoformat()
+            }
+        except ValueError as e:
+            return {'error': str(e)}, 404
+        except Exception as e:
+            db.session.rollback()
+            return {'error': 'Erro interno ao duplicar o produto'}, 500

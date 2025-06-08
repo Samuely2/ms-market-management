@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SellModal from './SellModal';
 
-const ProductCard = ({ product, onToggleStatus, onUpdateStock }) => {
+const ProductCard = ({ product, onToggleStatus, onUpdateStock, onCopyProduct }) => {
   const [showSellModal, setShowSellModal] = useState(false);
 
   const handleSaleSuccess = (newQuantity) => {
@@ -18,10 +18,10 @@ const ProductCard = ({ product, onToggleStatus, onUpdateStock }) => {
             src={product.image} 
             alt={product.name} 
             className="product-image"
-            // onError={(e) => {
-            //   e.target.onerror = null;
-            //   e.target.src = '/placeholder-product.png';
-            // }}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/placeholder-product.png'; // Fallback para uma imagem padrão
+            }}
           />
         ) : (
           <div className="image-loading-placeholder"></div>
@@ -54,6 +54,14 @@ const ProductCard = ({ product, onToggleStatus, onUpdateStock }) => {
             disabled={!product.status || product.quantity < 1}
           >
             Vender
+          </button>
+          
+          <button
+            className="copy-btn" // Botão adicionado
+            onClick={() => onCopyProduct(product.id)}
+            title="Copiar Produto"
+          >
+            Copiar
           </button>
 
           <Link 
