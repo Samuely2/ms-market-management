@@ -13,10 +13,10 @@ export default function ProductForm({
     status: true,
   });
 
-  const [imageStatus, setImageStatus] = useState('idle'); // 'idle', 'checking', 'valid', 'invalid'
+  const [errors, setErrors] = useState({});
+  const [imageStatus, setImageStatus] = useState('idle');
   const imageCheckRef = useRef(null);
 
-  // Carrega os dados do produto quando recebido
   useEffect(() => {
     if (product) {
       setFormData({
@@ -26,15 +26,11 @@ export default function ProductForm({
         image: product.image || '',
         status: product.status !== undefined ? product.status : true,
       });
-      
-      // Verifica a imagem inicial apenas se existir
-      if (product.image) {
-        checkImage(product.image);
-      }
+
+      if (product.image) checkImage(product.image);
     }
   }, [product]);
 
-  // Limpeza ao desmontar
   useEffect(() => {
     return () => {
       if (imageCheckRef.current) {
@@ -46,8 +42,7 @@ export default function ProductForm({
 
   const checkImage = (url) => {
     setImageStatus('checking');
-    
-    // Cancela qualquer verificação anterior
+
     if (imageCheckRef.current) {
       imageCheckRef.current.onload = null;
       imageCheckRef.current.onerror = null;
@@ -55,45 +50,56 @@ export default function ProductForm({
 
     const img = new Image();
     imageCheckRef.current = img;
-    
-    img.onload = () => {
-      setImageStatus('valid');
-    };
-    
-    img.onerror = () => {
-      setImageStatus('invalid');
-    };
-    
+
+    img.onload = () => setImageStatus('valid');
+    img.onerror = () => setImageStatus('invalid');
     img.src = url;
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
-    
-    setFormData(prev => ({
-      ...prev,
-      [name]: newValue
-    }));
 
-    // Verifica a imagem apenas quando o campo de imagem é alterado
+    setFormData(prev => ({ ...prev, [name]: newValue }));
+
     if (name === 'image') {
-      if (newValue) {
-        checkImage(newValue);
-      } else {
-        setImageStatus('idle');
-      }
+      if (newValue) checkImage(newValue);
+      else setImageStatus('idle');
     }
+
+    // Remove erro ao digitar
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validateFields = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'O nome é obrigatório.';
+    if (!formData.price || isNaN(formData.price) || parseFloat(formData.price) < 0)
+      newErrors.price = 'Preço inválido.';
+    if (!formData.quantity || isNaN(formData.quantity) || parseInt(formData.quantity) < 0)
+      newErrors.quantity = 'Quantidade inválida.';
+    if (formData.image && imageStatus === 'invalid')
+      newErrors.image = 'A imagem é inválida ou inacessível.';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateFields()) return;
+
     onSubmit({
       ...formData,
       price: parseFloat(formData.price),
       quantity: parseInt(formData.quantity),
     });
   };
+
+  const renderError = (field) =>
+    errors[field] && <span className="field-error">{errors[field]}</span>;
 
   return (
     <form onSubmit={handleSubmit} className="product-form">
@@ -104,9 +110,10 @@ export default function ProductForm({
           name="name"
           value={formData.name}
           onChange={handleChange}
-          required
           disabled={loading}
+          className={errors.name ? 'input-error' : ''}
         />
+        {renderError('name')}
       </div>
 
       <div className="form-row">
@@ -119,11 +126,12 @@ export default function ProductForm({
             name="price"
             value={formData.price}
             onChange={handleChange}
-            required
             disabled={loading}
+            className={errors.price ? 'input-error' : ''}
           />
+          {renderError('price')}
         </div>
-        
+
         <div className="form-group">
           <label>Quantidade</label>
           <input
@@ -132,9 +140,10 @@ export default function ProductForm({
             name="quantity"
             value={formData.quantity}
             onChange={handleChange}
-            required
             disabled={loading}
+            className={errors.quantity ? 'input-error' : ''}
           />
+          {renderError('quantity')}
         </div>
       </div>
 
@@ -147,22 +156,22 @@ export default function ProductForm({
           onChange={handleChange}
           placeholder="https://exemplo.com/imagem.jpg"
           disabled={loading}
+          className={errors.image ? 'input-error' : ''}
         />
-        
+        {renderError('image')}
+
         <div className="image-preview-container">
           {imageStatus === 'checking' && (
             <div className="image-loading">Verificando imagem...</div>
           )}
-          
-          {imageStatus === 'valid' && (
-            <img 
-              src={formData.image} 
-              alt="Preview do produto" 
+          {imageStatus === 'valid' && formData.image && (
+            <img
+              src={formData.image}
+              alt="Preview do produto"
               className="image-preview"
               onError={() => setImageStatus('invalid')}
             />
           )}
-          
           {imageStatus === 'invalid' && formData.image && (
             <div className="image-error">
               <p>Não foi possível carregar a imagem</p>
@@ -189,11 +198,7 @@ export default function ProductForm({
         className="submit-btn"
         disabled={loading || imageStatus === 'checking'}
       >
-        {loading ? (
-          <span>Salvando...</span>
-        ) : (
-          <span>{product ? 'Atualizar Produto' : 'Cadastrar Produto'}</span>
-        )}
+        {loading ? 'Salvando...' : product ? 'Atualizar Produto' : 'Cadastrar Produto'}
       </button>
     </form>
   );

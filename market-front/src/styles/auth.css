@@ -311,3 +311,46 @@
     color: #4f46e5;
     margin-top: 5px;
   }
+
+  .input-error {
+    border: 1px solid red;
+    background-color: #ffecec;
+  }
+  
+  .field-error {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .logout-button {
+    background-color: #e53935;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    background-color: #c62828;
+  }
+  
+  .logout-button:active {
+    transform: scale(0.98);
+  }
+  
+  .logout-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
